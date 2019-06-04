@@ -1,7 +1,7 @@
 <h1 i18n="@@BookFormComponent:book form">Buch bearbeiten</h1>
 
 <bm-book-form
-  *ngIf="book"
+  *ngIf="book$ | async as book"
   (submitBook)="updateBook($event)"
   [book]="book"
   [editing]="true"

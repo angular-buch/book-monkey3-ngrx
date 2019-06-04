@@ -1,6 +1,7 @@
 import { BookActions, BookActionTypes } from '../actions/book.actions';
 
 import { Book } from '../../shared/book';
+import { AdminActionTypes, AdminActions } from '../../admin/actions/admin.actions';
 
 export interface State {
   books: Book[];
@@ -12,7 +13,7 @@ export const initialState: State = {
   loading: false
 };
 
-export function reducer(state = initialState, action: BookActions): State {
+export function reducer(state = initialState, action: BookActions | AdminActions): State {
   switch (action.type) {
 
     case BookActionTypes.LoadBooks: {
@@ -51,6 +52,20 @@ export function reducer(state = initialState, action: BookActions): State {
           b => b.isbn !== action.payload.isbn
         )
       };
+    }
+
+    case AdminActionTypes.CreateBookSuccess: {
+      const { book } = action.payload;
+      const books = [...state.books, book];
+
+      return { ...state, books };
+    }
+
+    case AdminActionTypes.UpdateBookSuccess: {
+      const { book } = action.payload;
+      const books = state.books.map(b => b.isbn === book.isbn ? book : b);
+
+      return { ...state, books };
     }
 
     default:

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 
 import { Book } from '../../shared/book';
-import { BookStoreService } from '../../shared/book-store.service';
+import { State } from '../../reducers';
+import { CreateBook } from '../actions/admin.actions';
 
 @Component({
   selector: 'bm-create-book',
@@ -11,19 +12,13 @@ import { BookStoreService } from '../../shared/book-store.service';
 })
 export class CreateBookComponent implements OnInit {
 
-  constructor(
-    private bs: BookStoreService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) { }
+  constructor(private store: Store<State>) { }
 
   ngOnInit() {
   }
 
   createBook(book: Book) {
-    this.bs.create(book).subscribe(() => {
-      this.router.navigate(['../..', 'books'], { relativeTo: this.route });
-    });
+    this.store.dispatch(new CreateBook({ book }));
   }
 
 }

@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { Store, select } from '@ngrx/store';
 
 import { Book } from '../../shared/book';
-import { BookStoreService } from '../../shared/book-store.service';
+import { State } from '../../reducers';
+import { LoadBook } from 'src/app/books/actions/book.actions';
+import { getBookByIsbn } from 'src/app/books/selectors/book.selectors';
+import { UpdateBook } from '../actions/admin.actions';
 
 @Component({
   selector: 'bm-edit-book',
@@ -12,26 +17,19 @@ import { BookStoreService } from '../../shared/book-store.service';
 })
 export class EditBookComponent implements OnInit {
 
-  book: Book;
+  book$: Observable<Book>;
 
-  constructor(
-    private bs: BookStoreService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) { }
+  constructor(private route: ActivatedRoute, private store: Store<State>) { }
 
   ngOnInit() {
-    this.route.paramMap.pipe(
-      map(params => params.get('isbn')),
-      switchMap((isbn: string) => this.bs.getSingle(isbn))
-    )
-    .subscribe(book => this.book = book);
+    const isbn = this.route.snapshot.paramMap.get('isbn');
+    this.book$ = this.store.pipe(select(getBookByIsbn, { isbn }));
+
+    this.store.dispatch(new LoadBook({ isbn }));
   }
 
   updateBook(book: Book) {
-    this.bs.update(book).subscribe(() => {
-      this.router.navigate(['../../..', 'books', book.isbn], { relativeTo: this.route });
-    });
+    this.store.dispatch(new UpdateBook({ book }));
   }
 
 }
