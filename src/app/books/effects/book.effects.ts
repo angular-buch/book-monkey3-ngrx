@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { switchMap, map, catchError, mergeMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
-import { LoadBooksFailure, LoadBooksSuccess, BookActionTypes, BookActions } from '../actions/book.actions';
+import {
+  BookActionTypes,
+  BookActions,
+  LoadBooksSuccess,
+  LoadBooksFailure,
+  LoadBookSuccess,
+  LoadBookFailure
+} from '../actions/book.actions';
 import { BookStoreService } from 'src/app/shared/book-store.service';
 
 @Injectable()
@@ -17,6 +24,16 @@ export class BookEffects {
         map(books => new LoadBooksSuccess({ books })),
         catchError(error => of(new LoadBooksFailure({ error }))))
     )
+  );
+
+  @Effect()
+  loadBook$ = this.actions$.pipe(
+    ofType(BookActionTypes.LoadBook),
+    map(action => action.payload.isbn),
+    mergeMap(isbn => this.bs.getSingle(isbn).pipe(
+      map(book => new LoadBookSuccess({ book })),
+      catchError(error => of(new LoadBookFailure({ error })))
+    ))
   );
 
   constructor(

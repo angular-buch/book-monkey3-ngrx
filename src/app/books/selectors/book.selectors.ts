@@ -13,3 +13,8 @@ export const getAllBooks = createSelector(
   getBookState,
   state => state.books
 );
+
+export const getBookByIsbn = createSelector(
+  getAllBooks,
+  (books, props) => books.find(b => b.isbn === props.isbn)
+);

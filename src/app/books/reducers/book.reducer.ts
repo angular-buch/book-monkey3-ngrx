@@ -30,6 +30,20 @@ export function reducer(state = initialState, action: BookActions): State {
       };
     }
 
+    case BookActionTypes.LoadBookSuccess: {
+      const { book } = action.payload;
+
+      const books = [
+        ...state.books.filter(b => b.isbn !== book.isbn),
+        book
+      ];
+
+      return {
+        ...state,
+        books
+      };
+    }
+
     default:
       return state;
   }
