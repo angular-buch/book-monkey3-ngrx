@@ -15,14 +15,20 @@ export const initialState: State = {
 export function reducer(state = initialState, action: BookActions): State {
   switch (action.type) {
 
-    case BookActionTypes.LoadBooks:
-      return state;
+    case BookActionTypes.LoadBooks: {
+      return {
+        ...state,
+        loading: true
+      };
+    }
 
-    case BookActionTypes.LoadBooksSuccess:
-      return state;
-
-    case BookActionTypes.LoadBooksFailure:
-      return state;
+    case BookActionTypes.LoadBooksSuccess: {
+      return {
+        ...state,
+        books: action.payload.books,
+        loading: false
+      };
+    }
 
     default:
       return state;
