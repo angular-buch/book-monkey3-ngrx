@@ -9,7 +9,9 @@ export enum BookActionTypes {
   LoadBooksFailure = '[Book] Load Books Failure',
   LoadBook = '[Book] Load Book',
   LoadBookSuccess = '[Book] Load Book Success',
-  LoadBookFailure = '[Book] Load Book Failure'
+  LoadBookFailure = '[Book] Load Book Failure',
+  DeleteBook = '[Book] Delete Book',
+  DeleteBookSuccess = '[Book] Delete Book Success',
 }
 
 export class LoadBooks implements Action {
@@ -41,10 +43,22 @@ export class LoadBookFailure implements Action {
   constructor(public payload: { error: HttpErrorResponse }) {}
 }
 
+export class DeleteBook implements Action {
+  readonly type = BookActionTypes.DeleteBook;
+  constructor(public payload: { isbn: string }) {}
+}
+
+export class DeleteBookSuccess implements Action {
+  readonly type = BookActionTypes.DeleteBookSuccess;
+  constructor(public payload: { isbn: string }) {}
+}
+
 export type BookActions =
   | LoadBooks
   | LoadBooksSuccess
   | LoadBooksFailure
   | LoadBook
   | LoadBookSuccess
-  | LoadBookFailure;
+  | LoadBookFailure
+  | DeleteBook
+  | DeleteBookSuccess;

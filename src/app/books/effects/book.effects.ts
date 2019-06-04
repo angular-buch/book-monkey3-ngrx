@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { switchMap, map, catchError, mergeMap } from 'rxjs/operators';
+import { switchMap, map, catchError, mergeMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 import {
@@ -9,7 +10,9 @@ import {
   LoadBooksSuccess,
   LoadBooksFailure,
   LoadBookSuccess,
-  LoadBookFailure
+  LoadBookFailure,
+  DeleteBook,
+  DeleteBookSuccess
 } from '../actions/book.actions';
 import { BookStoreService } from 'src/app/shared/book-store.service';
 
@@ -36,9 +39,25 @@ export class BookEffects {
     ))
   );
 
+  @Effect()
+  deleteBook$ = this.actions$.pipe(
+    ofType<DeleteBook>(BookActionTypes.DeleteBook),
+    map(action => action.payload.isbn),
+    mergeMap(isbn => this.bs.remove(isbn).pipe(
+      map(() => new DeleteBookSuccess({ isbn }))
+    ))
+  );
+
+  @Effect({ dispatch: false })
+  deleteBookSuccess$ = this.actions$.pipe(
+    ofType(BookActionTypes.DeleteBookSuccess),
+    tap(() => this.router.navigate(['/books']))
+  );
+
   constructor(
     private actions$: Actions<BookActions>,
-    private bs: BookStoreService
+    private bs: BookStoreService,
+    private router: Router
   ) {}
 
 }

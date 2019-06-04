@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { State } from '../../reducers';
-import { LoadBook } from '../actions/book.actions';
+import { LoadBook, DeleteBook } from '../actions/book.actions';
 import { getBookByIsbn } from '../selectors/book.selectors';
 import { Book } from '../../shared/book';
 import { BookStoreService } from '../../shared/book-store.service';
@@ -25,8 +25,7 @@ export class BookDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const params = this.route.snapshot.paramMap;
-    const isbn = params.get('isbn');
+    const isbn = this.getIsbn();
 
     this.book$ = this.store.pipe(
       select(getBookByIsbn, { isbn })
@@ -41,9 +40,12 @@ export class BookDetailsComponent implements OnInit {
 
   removeBook() {
     if (confirm('Buch wirklich löschen?')) {
-      const isbn = this.route.snapshot.paramMap.get('isbn');
-      this.bs.remove(isbn)
-        .subscribe(res => this.router.navigate(['../'], { relativeTo: this.route }));
+      const isbn = this.getIsbn();
+      this.store.dispatch(new DeleteBook({ isbn }));
     }
+  }
+
+  getIsbn() {
+    return this.route.snapshot.paramMap.get('isbn');
   }
 }

@@ -44,6 +44,15 @@ export function reducer(state = initialState, action: BookActions): State {
       };
     }
 
+    case BookActionTypes.DeleteBookSuccess: {
+      return {
+        ...state,
+        books: state.books.filter(
+          b => b.isbn !== action.payload.isbn
+        )
+      };
+    }
+
     default:
       return state;
   }
