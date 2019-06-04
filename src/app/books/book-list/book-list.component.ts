@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
 
+import { State } from '../../reducers'; // Root State!
+import { LoadBooks } from '../actions/book.actions';
 import { Book } from '../../shared/book';
-import { BookStoreService } from '../../shared/book-store.service';
 
 @Component({
   selector: 'bm-book-list',
@@ -12,9 +14,9 @@ import { BookStoreService } from '../../shared/book-store.service';
 export class BookListComponent implements OnInit {
   books$: Observable<Book[]>;
 
-  constructor(private bs: BookStoreService) { }
+  constructor(private store: Store<State>) { }
 
   ngOnInit() {
-    this.books$ = this.bs.getAll();
+    this.store.dispatch(new LoadBooks());
   }
 }
