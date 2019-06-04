@@ -8,13 +8,19 @@ import { BookFormComponent } from './book-form/book-form.component';
 import { CreateBookComponent } from './create-book/create-book.component';
 import { FormMessagesComponent } from './form-messages/form-messages.component';
 import { EditBookComponent } from './edit-book/edit-book.component';
+import { StoreModule } from '@ngrx/store';
+import * as fromAdmin from './reducers/admin.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { AdminEffects } from './effects/admin.effects';
 
 @NgModule({
   imports: [
     CommonModule,
     AdminRoutingModule,
     ReactiveFormsModule,
-    DateValueAccessorModule
+    DateValueAccessorModule,
+    StoreModule.forFeature('admin', fromAdmin.reducer),
+    EffectsModule.forFeature([AdminEffects])
   ],
   declarations: [
     BookFormComponent,
