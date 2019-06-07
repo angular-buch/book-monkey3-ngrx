@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 
 import { Book } from '../../shared/book';
 import { State } from '../../reducers';
-import { CreateBook } from '../actions/admin.actions';
+import { createBook } from '../actions/admin.actions';
 
 @Component({
   selector: 'bm-create-book',
@@ -18,7 +18,7 @@ export class CreateBookComponent implements OnInit {
   }
 
   createBook(book: Book) {
-    this.store.dispatch(new CreateBook({ book }));
+    this.store.dispatch(createBook({ book }));
   }
 
 }

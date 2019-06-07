@@ -6,9 +6,9 @@ import { Store, select } from '@ngrx/store';
 
 import { Book } from '../../shared/book';
 import { State } from '../../reducers';
-import { LoadBook } from 'src/app/books/actions/book.actions';
+import { loadBook } from '../../books/actions/book.actions';
+import { updateBook } from '../actions/admin.actions';
 import { getBookByIsbn } from 'src/app/books/selectors/book.selectors';
-import { UpdateBook } from '../actions/admin.actions';
 
 @Component({
   selector: 'bm-edit-book',
@@ -25,11 +25,11 @@ export class EditBookComponent implements OnInit {
     const isbn = this.route.snapshot.paramMap.get('isbn');
     this.book$ = this.store.pipe(select(getBookByIsbn, { isbn }));
 
-    this.store.dispatch(new LoadBook({ isbn }));
+    this.store.dispatch(loadBook({ isbn }));
   }
 
   updateBook(book: Book) {
-    this.store.dispatch(new UpdateBook({ book }));
+    this.store.dispatch(updateBook({ book }));
   }
 
 }

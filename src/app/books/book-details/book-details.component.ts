@@ -4,7 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 import { State } from '../../reducers';
-import { LoadBook, DeleteBook } from '../actions/book.actions';
+import { deleteBook, loadBook } from '../actions/book.actions';
 import { getBookByIsbn } from '../selectors/book.selectors';
 import { Book } from '../../shared/book';
 import { BookStoreService } from '../../shared/book-store.service';
@@ -31,7 +31,7 @@ export class BookDetailsComponent implements OnInit {
       select(getBookByIsbn, { isbn })
     );
 
-    this.store.dispatch(new LoadBook({ isbn }));
+    this.store.dispatch(loadBook({ isbn }));
   }
 
   getRating(num: number) {
@@ -41,7 +41,7 @@ export class BookDetailsComponent implements OnInit {
   removeBook() {
     if (confirm('Buch wirklich löschen?')) {
       const isbn = this.getIsbn();
-      this.store.dispatch(new DeleteBook({ isbn }));
+      this.store.dispatch(deleteBook({ isbn }));
     }
   }
 

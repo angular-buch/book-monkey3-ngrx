@@ -1,7 +1,8 @@
-import { BookActions, BookActionTypes } from '../actions/book.actions';
+import { createReducer, on, Action } from '@ngrx/store';
 
 import { Book } from '../../shared/book';
-import { AdminActionTypes, AdminActions } from '../../admin/actions/admin.actions';
+import * as BookActions from '../actions/book.actions';
+import * as AdminActions from '../../admin/actions/admin.actions';
 
 export interface State {
   books: Book[];
@@ -13,62 +14,61 @@ export const initialState: State = {
   loading: false
 };
 
-export function reducer(state = initialState, action: BookActions | AdminActions): State {
-  switch (action.type) {
 
-    case BookActionTypes.LoadBooks: {
-      return {
-        ...state,
-        loading: true
-      };
-    }
+const bookReducer = createReducer(
+  initialState,
 
-    case BookActionTypes.LoadBooksSuccess: {
-      return {
-        ...state,
-        books: action.payload.books,
-        loading: false
-      };
-    }
+  on(BookActions.loadBooks, state => {
+    return {
+      ...state,
+      loading: true
+    };
+  }),
 
-    case BookActionTypes.LoadBookSuccess: {
-      const { book } = action.payload;
+  on(BookActions.loadBooksSuccess, (state, action) => {
+    return {
+      ...state,
+      books: action.books,
+      loading: false
+    };
+  }),
 
-      const books = [
-        ...state.books.filter(b => b.isbn !== book.isbn),
-        book
-      ];
+  on(BookActions.loadBookSuccess, (state, action) => {
+    const { book } = action;
 
-      return {
-        ...state,
-        books
-      };
-    }
+    const books = [
+      ...state.books.filter(b => b.isbn !== book.isbn),
+      book
+    ];
 
-    case BookActionTypes.DeleteBookSuccess: {
-      return {
-        ...state,
-        books: state.books.filter(
-          b => b.isbn !== action.payload.isbn
-        )
-      };
-    }
+    return { ...state, books };
+  }),
 
-    case AdminActionTypes.CreateBookSuccess: {
-      const { book } = action.payload;
-      const books = [...state.books, book];
+  on(BookActions.deleteBookSuccess, (state, action) => {
+    return {
+      ...state,
+      books: state.books.filter(
+        b => b.isbn !== action.isbn
+      )
+    };
+  }),
 
-      return { ...state, books };
-    }
+  on(AdminActions.createBookSuccess, (state, action) => {
+    const { book } = action;
+    const books = [...state.books, book];
 
-    case AdminActionTypes.UpdateBookSuccess: {
-      const { book } = action.payload;
-      const books = state.books.map(b => b.isbn === book.isbn ? book : b);
+    return { ...state, books };
+  }),
 
-      return { ...state, books };
-    }
+  on(AdminActions.updateBookSuccess, (state, action) => {
+    const { book } = action;
+    const books = state.books.map(b => b.isbn === book.isbn ? book : b);
 
-    default:
-      return state;
-  }
+    return { ...state, books };
+  })
+
+);
+
+export function reducer(state: State | undefined, action: Action): State {
+  return bookReducer(state, action);
 }

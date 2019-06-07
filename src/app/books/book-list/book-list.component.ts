@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
 
 import { State } from '../../reducers'; // Root State!
-import { LoadBooks } from '../actions/book.actions';
+import { loadBooks } from '../actions/book.actions';
 import { getAllBooks, getBooksLoading } from '../selectors/book.selectors';
 import { Book } from '../../shared/book';
 
@@ -22,6 +22,6 @@ export class BookListComponent implements OnInit {
     this.books$ = this.store.pipe(select(getAllBooks));
     this.loading$ = this.store.pipe(select(getBooksLoading));
 
-    this.store.dispatch(new LoadBooks());
+    this.store.dispatch(loadBooks());
   }
 }

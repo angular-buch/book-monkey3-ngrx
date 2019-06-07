@@ -1,5 +1,5 @@
 
-import { AdminActions, AdminActionTypes } from '../actions/admin.actions';
+import { Action, createReducer, on } from '@ngrx/store';
 
 export interface State {
 
@@ -9,10 +9,8 @@ export const initialState: State = {
 
 };
 
-export function reducer(state = initialState, action: AdminActions): State {
-  switch (action.type) {
+const adminReducer = createReducer(initialState)
 
-    default:
-      return state;
-  }
+export function reducer(state = initialState, action: Action): State {
+  return adminReducer(state, action);
 }

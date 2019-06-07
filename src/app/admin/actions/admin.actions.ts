@@ -1,35 +1,25 @@
-import { Action } from '@ngrx/store';
+import { Action, props, createAction } from '@ngrx/store';
 import { Book } from '../../shared/book';
 
-export enum AdminActionTypes {
-  CreateBook = '[Admin] Create Book',
-  CreateBookSuccess = '[Admin] Create Book Success',
-  UpdateBook = '[Admin] Update Book',
-  UpdateBookSuccess = '[Admin] Update Book Success'
-}
+export const createBook = createAction(
+  '[Admin] Create Book',
+  props<{ book: Book }>()
+);
 
-export class CreateBook implements Action {
-  readonly type = AdminActionTypes.CreateBook;
-  constructor(public payload: { book: Book }) {}
-}
+export const createBookSuccess = createAction(
+  '[Admin] Create Book Success',
+  props<{ book: Book }>()
+);
 
-export class CreateBookSuccess implements Action {
-  readonly type = AdminActionTypes.CreateBookSuccess;
-  constructor(public payload: { book: Book }) {}
-}
+export const updateBook = createAction(
+  '[Admin] Update Book',
+  props<{ book: Book }>()
+);
 
-export class UpdateBook implements Action {
-  readonly type = AdminActionTypes.UpdateBook;
-  constructor(public payload: { book: Book }) {}
-}
+export const updateBookSuccess = createAction(
+  '[Admin] Update Book Success',
+  props<{ book: Book }>()
+);
 
-export class UpdateBookSuccess implements Action {
-  readonly type = AdminActionTypes.UpdateBookSuccess;
-  constructor(public payload: { book: Book }) {}
-}
 
-export type AdminActions =
-  | CreateBook
-  | CreateBookSuccess
-  | UpdateBook
-  | UpdateBookSuccess;
+
