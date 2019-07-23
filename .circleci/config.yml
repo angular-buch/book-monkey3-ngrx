@@ -1,0 +1,58 @@
+version: 2
+
+jobs:
+
+  build:
+    docker:
+    - image: circleci/node:12-browsers
+      environment:
+        NG_CLI_ANALYTICS: ci
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm i --silent
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      # no --prod to have Redux DevTools available
+      - run: npm run ng -- build
+      - persist_to_workspace:
+          # 'project' is the default working_directory
+          root: /home/circleci/project
+          paths:
+            - dist
+
+  deploy:
+    docker:
+      - image: circleci/node:12-browsers
+
+    environment:
+      GITHUB_ORG: https://GH_TOKEN@github.com/book-monkey3
+      GITHUB_NAME: The Buildbot
+      GITHUB_EMAIL: buildbot@angular2buch.de
+      NAME: book-monkey3-ngrx-build
+      CNAME: bm3-ngrx.angular-buch.com
+
+    steps:
+      - attach_workspace:
+          at: /home/circleci/project
+      - run: npm i --silent angular-cli-ghpages@0.5.3
+      - run: npx angular-cli-ghpages --repo "$GITHUB_ORG/$NAME.git" --name "$GITHUB_NAME" --email "$GITHUB_EMAIL" --cname "$CNAME" --dist "dist/BookMonkey"
+
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      # The deploy job will only run on the filtered branches and
+      # require the build job to be successful before it starts
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - release
